@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./
+    container_name: express_application
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=docker123
+      - DB_NAME=problem5
+      - NODE_ENV=production
+      - PORT=3000
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: express_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: docker123
+      MYSQL_DATABASE: problem5
+    restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./build/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3308:3306"
+
+volumes:
+  mysql-data:
